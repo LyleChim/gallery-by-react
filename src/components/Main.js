@@ -15,10 +15,47 @@ function getImangeURL(imageDatasArr) {
     imageDatasArr[i] = singleImageData;
   }
   return imageDatasArr;
-};
+}
 
 imageDatas = getImangeURL(imageDatas);
 // console.log(imageDatas);
+
+
+class ControllerUnit extends React.Component {
+  constructor(props) {
+    super(props);
+
+  }
+
+  handleClick = (e) => {
+
+    if (this.props.arrange.isCenter) {
+      this.props.inverse();
+    } else {
+      this.props.center();
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  render() {
+
+    var controllerUnitClassName = 'controller-unit';
+
+    if (this.props.arrange.isCenter) {
+      controllerUnitClassName += ' is-center';
+      if (this.props.arrange.isInverse) {
+        controllerUnitClassName += ' is-inverse';
+      }
+    }
+
+    return(
+      <span className={controllerUnitClassName} onClick={this.handleClick}></span>
+    );
+  }
+
+}
 
 class AppComponent extends React.Component {
 
@@ -89,7 +126,7 @@ class AppComponent extends React.Component {
       vPosRangeTopY = vPosRange.topY,
       vPosRangeX = vPosRange.x,
       imgArrangeTopArr = [],
-      topImgNum = Math.ceil(Math.random() * 2),
+      topImgNum = Math.floor(Math.random() * 2),
       topImgSpliceIndex = 0,
       imgArrangeCenterArr = imgArrangeArr.splice(centerIndex, 1);
 
@@ -131,6 +168,8 @@ class AppComponent extends React.Component {
         isCenter: false
       };
     }
+
+    // debugger;
 
     if (imgArrangeTopArr && imgArrangeTopArr[0]) {
       imgArrangeArr.splice(topImgSpliceIndex, 0, imgArrangeTopArr[0]);
@@ -189,25 +228,22 @@ class AppComponent extends React.Component {
           },
           rotate: 0,
           isInverse: false,
-          isCenter: false,
+          isCenter: false
         }
       }
 
-      imgFigures.push(<ImgFigure key={value.fileName} 
-                                 data={value} 
-                                 ref={'imgFigure' + index} 
-                                 arrange={this.state.imgsArrangeArr[index]} 
-                                 inverse={this.inverse(index)}
-                                 center={this.center(index)}
-                                 />);
+      imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure' + index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)} />);
+
+      controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)} />);
+
     }.bind(this));
 
     return (
-      <section className="stage" ref="stage">
-        <section className="img-src">
+      <section className='stage' ref='stage'>
+        <section className='img-src'>
           {imgFigures}
         </section>
-        <nav className="controller-nav">
+        <nav className='controller-nav'>
           {controllerUnits}
         </nav>
       </section>
@@ -246,7 +282,7 @@ class ImgFigure extends React.Component {
       // (['-moz-', '-ms-', '-webkit-', '']).forEach(function(value, index) {
       //   styleObj[value + 'transform'] = 'rotate(' + this.props.arrange.rotate + 'deg)';
       // }.bind(this));
-      (['MozTransform', 'msTransform', 'WebkitTransform', 'transform']).forEach(function(value, index) {
+      (['MozTransform', 'msTransform', 'WebkitTransform', 'transform']).forEach(function(value) {
         styleObj[value] = 'rotate(' + this.props.arrange.rotate + 'deg)';
         //styleObj[value + 'transform'] = 'rotate(' + this.props.arrange.rotate + 'deg)';
       }.bind(this));
@@ -265,7 +301,7 @@ class ImgFigure extends React.Component {
       <figure className={imgFigureClassName} style={styleObj} onClick={this.handleClick} >
         <img src={this.props.data.imageURL} alt={this.props.data.title} />
         <figcaption>
-          <h2 className="img-title">{this.props.data.title}</h2>
+          <h2 className='img-title'>{this.props.data.title}</h2>
           <div className='img-back' onClick={this.handleClick}>
             <p>
               {this.props.data.desc}

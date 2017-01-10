@@ -42,7 +42,6 @@ html,body{
 
       &.is-inverse{
         transform: translate(320px) rotateY(180deg);
-
       }
     }
 
@@ -116,7 +115,8 @@ html,body{
         }
         &.is-inverse{
           background-color: #555;
-          transform:rotateY(180deg)
+          // transform:rotateY(180deg)
+          transform: translate(30px) rotateY(180deg);
         }
       }
 
